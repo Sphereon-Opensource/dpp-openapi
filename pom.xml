@@ -49,13 +49,13 @@
     </dependency>
   </dependencies>
 
-  <description>The parent project for Verifiable Data Exchange Openapi modules</description>
+  <description>The parent project for Digital Product Passport Openapi modules</description>
   <groupId>com.sphereon.dpp</groupId>
   <modelVersion>4.0.0</modelVersion>
   <modules>
     <module>assets</module>
   </modules>
-  <name>Verifiable Data Exchange Parent Project</name>
+  <name>Digital Product Passport Parent Project</name>
   <packaging>pom</packaging>
 
   <parent>

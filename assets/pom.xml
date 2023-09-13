@@ -76,12 +76,12 @@
           <execution>
             <configuration>
               <additionalProperties>
-                <npmName>@sphereon/vdx.ecmo</npmName>
+                <npmName>@sphereon/dpp.assets</npmName>
                 <npmVersion>9.5.1</npmVersion>
               </additionalProperties>
               <apiPackage>api</apiPackage>
               <configOptions>
-                <npmName>@sphereon/vdx.ecmo</npmName>
+                <npmName>@sphereon/dpp.assets</npmName>
                 <npmVersion>9.5.1</npmVersion>
               </configOptions>
               <generatorName>typescript-fetch</generatorName>

@@ -416,7 +416,6 @@ components:
     Asset:
       required:
         - name
-        - description
         - contactId
         - products
         - credentials
@@ -433,9 +432,6 @@ components:
           type: string
           example: 'did:example:1234'
           description: 'The identity owning this asset. Typically this will also be the entity issuing the VCs associated with the Asset. In most cases this is a DID associated with an organization'
-        description:
-          type: string
-          example: Road Salt
         products:
           type: array
           items:
