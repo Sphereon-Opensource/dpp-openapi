@@ -1,0 +1,492 @@
+openapi: 3.0.3
+info:
+  title: Assets API
+  description: |-
+    Digital Product Passport (DPP) Assets API, allows you to programmatically manage Assets in the DPP
+  termsOfService: https://sphereon.com/terms/
+  contact:
+    email: dev@sphereon.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.1.0
+servers:
+  - url: https://dpp.vdx.sphereon.io/api/assets/v1
+tags:
+  - name: Asset
+    description: Endpoints related to the entity asset
+    externalDocs:
+      url: https://github.com/Sphereon-Open-Source/SSI-SDK
+      description: Find out more
+paths:
+  /assets:
+    get:
+      tags:
+        - Asset
+      summary: Get Assets
+      description: Gets Assets
+      operationId: getAssets
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetsResponse'
+        401:
+          description: Unauthorized.
+        403:
+          description: Forbidden.
+      security:
+        - dpp_auth:
+            - read:assets
+    post:
+      tags:
+        - Asset
+      summary: Add a new Asset
+      description: Add a new Asset
+      operationId: addAsset
+      requestBody:
+        description: Create a new Asset
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/components/schemas/Asset'
+                - type: object
+                  properties:
+                    id:
+                      readOnly: true
+        required: true
+      responses:
+        201:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetResponse'
+        400:
+          description: Bad request.
+        401:
+          description: Unauthorized.
+        403:
+          description: Forbidden.
+      security:
+        - dpp_auth:
+            - write:assets
+  /assets/{assetId}:
+    get:
+      tags:
+        - Asset
+      summary: Gets Asset by ID
+      description: Returns a single Asset
+      operationId: getAssetById
+      parameters:
+        - $ref: '#/components/parameters/assetId'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetResponse'
+        400:
+          description: Bad request.
+        401:
+          description: Unauthorized.
+        403:
+          description: Forbidden.
+        404:
+          description: Asset not found
+      security:
+        - dpp_auth:
+            - read:assets
+    put:
+      tags:
+        - Asset
+      summary: Update an existing asset
+      description: Update an existing Asset by Id
+      operationId: updateAssetById
+      parameters:
+        - $ref: '#/components/parameters/assetId'
+      requestBody:
+        description: Update an existent Asset
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Asset'
+        required: true
+      responses:
+        200:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetResponse'
+        400:
+          description: Bad request.
+        401:
+          description: Unauthorized.
+        403:
+          description: Forbidden.
+        404:
+          description: Asset not found
+      security:
+        - dpp_auth:
+            - write:assets
+    delete:
+      tags:
+        - Asset
+      summary: Deletes an Asset
+      description: delete an Asset by ID
+      operationId: deleteAssetById
+      parameters:
+        - $ref: '#/components/parameters/assetId'
+      responses:
+        200:
+          description: Successful operation
+        400:
+          description: Bad request.
+        401:
+          description: Unauthorized.
+        403:
+          description: Forbidden.
+        404:
+          description: Asset not found.
+      security:
+        - dpp_auth:
+            - write:assets
+
+components:
+  parameters:
+    assetId:
+      name: assetId
+      in: path
+      description: The id of the asset.
+      required: true
+      schema:
+        type: string
+      example: 091fe02a-3ml1-nb6b-a9ht-0242ac15632
+  schemas:
+    Issuer:
+      type: object
+      properties:
+        id:
+          type: string
+      additionalProperties: true
+
+    CredentialSubject:
+      type: object
+      properties:
+        id:
+          type: string
+      additionalProperties: true
+      required:
+        - id
+
+    CredentialStatus:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+      required:
+        - id
+        - type
+
+    CredentialContextType:
+      type: object
+      properties:
+        name:
+          type: string
+        did:
+          type: string
+      additionalProperties: true
+      required:
+        - name
+        - did
+
+    CredentialSchemaType:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+      required:
+        - id
+
+    Credential:
+      type: object
+      properties:
+        '@context':
+           oneOf:
+             - type: string
+             - $ref: '#/components/schemas/CredentialContextType'
+             - type: array
+               items:
+                 $ref: '#/components/schemas/CredentialContextType'
+             - type: array
+               items:
+                 type: string
+        type:
+          type: array
+          items:
+            type: string
+        credentialSchema:
+          nullable: true
+          oneOf:
+            - type: string
+            - $ref: '#/components/schemas/CredentialSchemaType'
+            - type: array
+              items:
+                type: string
+            - type: array
+              items:
+                $ref: '#/components/schemas/CredentialSchemaType'
+        issuer:
+          oneOf:
+            - type: string
+            - $ref: '#/components/schemas/Issuer'
+        issuanceDate:
+          type: string
+        credentialSubject:
+          oneOf:
+            - $ref: '#/components/schemas/CredentialSubject'
+            - type: array
+              items:
+                $ref: '#/components/schemas/CredentialSubject'
+        expirationDate:
+          type: string
+        id:
+          type: string
+        credentialStatus:
+          $ref: '#/components/schemas/CredentialStatus'
+        description:
+          type: string
+        name:
+          type: string
+      additionalProperties: true
+      required:
+        - '@context'
+        - type
+        - issuer
+        - issuanceDate
+        - credentialSubject
+      example:
+        {
+          "@context":
+            [
+              "https://www.w3.org/2018/credentials/v1",
+              "https://sphereon-opensource.github.io/contexts/credentials/ddp/roadsalt/v1",
+            ],
+          "id": "http://example.com/credentials/3732",
+          "type": [ "VerifiableCredential", "RoadSaltCredential" ],
+          "issuer": "did:example:123",
+          "issuanceDate": "2023-05-02T22:37:26.544Z",
+          "credentialSubject":
+            {
+              "id": "did:example:123",
+              "name": "Road salt batch 1"
+            }
+        }
+
+    # This should be ProofType. It was named Type because of a bug in OpenAPI: https://github.com/OpenAPITools/openapi-generator/issues/14627
+    Type:
+      type: string
+      enum:
+        - Ed25519Signature2018
+        - Ed25519Signature2020
+        - EcdsaSecp256k1Signature2019
+        - EcdsaSecp256k1RecoverySignature2020
+        - JsonWebSignature2020
+        - RsaSignature2018
+        - GpgSignature2020
+        - JcsEd25519Signature2020
+        - BbsBlsSignatureProof2020
+        - BbsBlsBoundSignatureProof2020
+        - JwtProof2020
+
+    ProofPurpose:
+      type: string
+      enum:
+        - verificationMethod
+        - assertionMethod
+        - authentication
+        - keyAgreement
+        - contractAgreement
+        - capabilityInvocation
+        - capabilityDelegation
+
+    Proof:
+      type: object
+      properties:
+        type:
+          oneOf:
+            - $ref: '#/components/schemas/Type'
+            - type: string
+        created:
+          type: string
+        proofPurpose:
+          oneOf:
+            - $ref: '#/components/schemas/ProofPurpose'
+            - type: string
+        verificationMethod:
+          type: string
+        challenge:
+          type: string
+        domain:
+          type: string
+        proofValue:
+          type: string
+        jws:
+          type: string
+        jwt:
+          type: string
+        nonce:
+          type: string
+        requiredRevealStatements:
+          type: array
+          items:
+            type: string
+      additionalProperties: true
+      required:
+        - type
+        - created
+        - proofPurpose
+        - verificationMethod
+
+    VerifiableCredential:
+      allOf:
+        - $ref: '#/components/schemas/Credential'
+        - type: object
+          properties:
+            proof:
+              $ref: '#/components/schemas/Proof'
+
+    Product:
+      type: object
+      properties:
+        nature:
+          type: string
+          example: 'Zeezout conform NTA 8900'
+        specification:
+          type: string
+          example: 'Grain distribution fine'
+        countryOfOrigin:
+          type: string
+          example: 'NL'
+        finalDeliveryDate:
+          type: string
+          example: '2023-09-07T14:15:30Z'
+        unit:
+          type: string
+          example: 'Kg'
+        rowAmount:
+          type: number
+          example: 100
+      required:
+        - id
+        - nature
+        - specification
+        - countryOfOrigin
+        - finalDeliveryDate
+        - unit
+        - rowAmount
+
+    AccessType:
+      type: string
+      enum:
+        - private
+        - public
+
+    Document:
+      type: object
+      properties:
+        file:
+          type: string
+          example: '/home/jdoe/Kwaliteitsplan.pdf'
+        accessType:
+          $ref: '#/components/schemas/AccessType'
+      required:
+        - file
+        - accessType
+
+    Asset:
+      required:
+        - name
+        - description
+        - contactId
+        - products
+        - credentials
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426655440000
+        name:
+          type: string
+          example: Road Salt
+        owner:
+          type: string
+          example: 'did:example:1234'
+          description: 'The identity owning this asset. Typically this will also be the entity issuing the VCs associated with the Asset. In most cases this is a DID associated with an organization'
+        description:
+          type: string
+          example: Road Salt
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        documents:
+          type: array
+          items:
+            $ref: '#/components/schemas/Document'
+        additionalInformation:
+          type: string
+        credentials:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/Credential'
+              - $ref: '#/components/schemas/VerifiableCredential'
+    AssetResponse:
+      type: object
+      properties:
+        asset:
+          $ref: '#/components/schemas/Asset'
+    AssetsResponse:
+      type: object
+      properties:
+        assets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Asset'
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+  requestBodies:
+    Asset:
+      description: Asset object be added
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Asset'
+  securitySchemes:
+    dpp_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://auth.demo.sphereon.com/oauth/authorize
+          scopes:
+            write:assets: modify assets in your account
+            read:assets: read your assets
