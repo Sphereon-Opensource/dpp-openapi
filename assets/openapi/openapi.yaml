@@ -368,6 +368,7 @@ components:
     Asset:
       required:
         - name
+        - contactId
         - description
         - credentials
       type: object
@@ -376,6 +377,9 @@ components:
           type: string
           format: uuid
           example: 123e4567-e89b-12d3-a456-426655440000
+        contactId:
+          type: string
+          example: 143267
         name:
           type: string
           example: Road Salt
