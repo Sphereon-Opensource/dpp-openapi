@@ -460,16 +460,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Asset'
-    ApiResponse:
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-        type:
-          type: string
-        message:
-          type: string
   requestBodies:
     Asset:
       description: Asset object be added
