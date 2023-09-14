@@ -365,59 +365,11 @@ components:
             proof:
               $ref: '#/components/schemas/Proof'
 
-    Product:
-      type: object
-      properties:
-        nature:
-          type: string
-          example: 'Zeezout conform NTA 8900'
-        specification:
-          type: string
-          example: 'Grain distribution fine'
-        countryOfOrigin:
-          type: string
-          example: 'NL'
-        finalDeliveryDate:
-          type: string
-          example: '2023-09-07T14:15:30Z'
-        unit:
-          type: string
-          example: 'Kg'
-        rowAmount:
-          type: number
-          example: 100
-      required:
-        - id
-        - nature
-        - specification
-        - countryOfOrigin
-        - finalDeliveryDate
-        - unit
-        - rowAmount
-
-    AccessType:
-      type: string
-      enum:
-        - private
-        - public
-
-    Document:
-      type: object
-      properties:
-        file:
-          type: string
-          example: '/home/jdoe/Kwaliteitsplan.pdf'
-        accessType:
-          $ref: '#/components/schemas/AccessType'
-      required:
-        - file
-        - accessType
-
     Asset:
       required:
         - name
         - contactId
-        - products
+        - description
         - credentials
       type: object
       properties:
@@ -425,6 +377,9 @@ components:
           type: string
           format: uuid
           example: 123e4567-e89b-12d3-a456-426655440000
+        contactId:
+          type: string
+          example: 143267
         name:
           type: string
           example: Road Salt
@@ -432,16 +387,9 @@ components:
           type: string
           example: 'did:example:1234'
           description: 'The identity owning this asset. Typically this will also be the entity issuing the VCs associated with the Asset. In most cases this is a DID associated with an organization'
-        products:
-          type: array
-          items:
-            $ref: '#/components/schemas/Product'
-        documents:
-          type: array
-          items:
-            $ref: '#/components/schemas/Document'
-        additionalInformation:
+        description:
           type: string
+          example: Road Salt
         credentials:
           type: array
           items:
